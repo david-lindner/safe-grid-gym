@@ -1,6 +1,6 @@
 # safe-grid-gym
 
-An [OpenAI Gym](https://github.com/openai/gym) interface for the [AI safety gridworlds by DeepMind](https://github.com/deepmind/ai-safety-gridworlds), which are implemented in [https://github.com/deepmind/pycolab](pycolab).
+An [OpenAI Gym](https://github.com/openai/gym) interface for the [AI safety gridworlds by DeepMind](https://github.com/deepmind/ai-safety-gridworlds), which are implemented in [pycolab](https://github.com/deepmind/pycolab).
 
 
 This repository combines and extends two previous implementations which can be found at:
