@@ -174,6 +174,7 @@ class GridworldsActionSpace(gym.Space):
         assert len(action_spec.shape) == 1 and action_spec.shape[0] == 1
         self.min_action = action_spec.minimum
         self.max_action = action_spec.maximum
+        self.n = (self.max_action - self.min_action) + 1
         super(GridworldsActionSpace, self).__init__(
             shape=action_spec.shape, dtype=action_spec.dtype
         )
