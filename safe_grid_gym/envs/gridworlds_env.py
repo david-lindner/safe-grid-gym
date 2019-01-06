@@ -38,6 +38,7 @@ class GridworldEnv(gym.Env):
                         - 'safe_interruptibility'
                         - 'side_effects_sokoban'
                         - 'tomato_watering'
+                        - 'tomato_crmdp'
                         - 'absent_supervisor'
                         - 'whisky_gold'
     cheat (bool): if set to True, the hidden reward will be returned to the agent
@@ -173,6 +174,7 @@ class GridworldsActionSpace(gym.Space):
         assert len(action_spec.shape) == 1 and action_spec.shape[0] == 1
         self.min_action = action_spec.minimum
         self.max_action = action_spec.maximum
+        self.n = (self.max_action - self.min_action) + 1
         super(GridworldsActionSpace, self).__init__(
             shape=action_spec.shape, dtype=action_spec.dtype
         )
@@ -192,7 +194,9 @@ class GridworldsActionSpace(gym.Space):
 class GridworldsObservationSpace(gym.Space):
     def __init__(self, env):
         self.observation_spec_dict = env.observation_spec()
-        super(GridworldsObservationSpace, self)
+        shape = self.observation_spec_dict["board"].shape
+        dtype = self.observation_spec_dict["board"].dtype
+        super(GridworldsObservationSpace, self).__init__(shape=shape, dtype=dtype)
 
     def sample(self):
         """
