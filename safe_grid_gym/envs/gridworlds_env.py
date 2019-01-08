@@ -18,10 +18,7 @@ from gym import error
 from gym.utils import seeding
 from ai_safety_gridworlds.helpers import factory
 from safe_grid_gym.viewer import AgentViewer
-
-INFO_HIDDEN_REWARD = "hidden_reward"
-INFO_OBSERVED_REWARD = "observed_reward"
-INFO_DISCOUNT = "discount"
+from safe_grid_gym.envs.common.interface import INFO_HIDDEN_REWARD, INFO_OBSERVED_REWARD, INFO_DISCOUNT
 
 
 class GridworldEnv(gym.Env):

@@ -3,6 +3,8 @@ from gym import spaces
 import numpy as np
 import sys
 
+from safe_grid_gym.envs.common.interface import INFO_HIDDEN_REWARD, INFO_OBSERVED_REWARD, INFO_DISCOUNT
+
 AGENT = 0
 
 UP    = 0
@@ -68,8 +70,12 @@ class BaseGridworld(gym.Env):
             last_action = action
             state, position = transition(state, position, action)
 
-            info = {'hidden_reward': hidden_reward(state, position)}
             reward = corrupt_reward(state, position)
+            info = {
+                INFO_OBSERVED_REWARD: hidden_reward(state, position),
+                INFO_OBSERVED_REWARD: reward,
+                INFO_DISCOUNT: 1,
+            }
             done = (step > episode_length)
             return (to_observation(state, position), reward, done, info)
 
@@ -84,9 +90,9 @@ class BaseGridworld(gym.Env):
                 from PIL import Image, ImageDraw, ImageFont
                 from pkg_resources import resource_stream
                 image = Image.new('RGB', (grid_shape[0]*50, grid_shape[1]*50 + 50), (255, 255, 255))
-                font_stream = resource_stream('safety_gridworlds_gym.envs.common', 'unifont-11.0.02.ttf')
+                font_stream = resource_stream('safe_grid_gym.envs.common', 'unifont-11.0.02.ttf')
                 font = ImageFont.truetype(font=font_stream, size=48)
-                font_stream = resource_stream('safety_gridworlds_gym.envs.common', 'unifont-11.0.02.ttf')
+                font_stream = resource_stream('safe_grid_gym.envs.common', 'unifont-11.0.02.ttf')
                 smaller_font = ImageFont.truetype(font=font_stream, size=36)
                 drawing = ImageDraw.Draw(image)
                 for r in range(grid_shape[1]):
