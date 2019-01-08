@@ -12,7 +12,7 @@ This repository combines and extends two previous implementations which can be f
 `safe_grid_gym` additionally provides:
    - Additional toy environments
    - Additional features for the Gym environment:
-      - A parameter that can be set to get the true hidden reward from the gridworld environments. This allows to test agents on the hidden reward as well as the observed reward.
+      - A wrapper `Cheat` that can be used to get the true hidden reward from the gridworld environments. This allows to test agents on the hidden reward as well as the observed reward.
       - Additional render modes `ansi` and `rgb_array` allowing for more automated experimentation
    - Easier dependency management by providing a `setup.py`
    - Unittests for the Gym environment using the demonstrations provided by in the `ai-safety-gridworlds` repository

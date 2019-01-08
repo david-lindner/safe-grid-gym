@@ -2,6 +2,7 @@
 from gym.envs.registration import register
 
 from safe_grid_gym.envs import GridworldEnv
+from safe_grid_gym.envs.common.wrapper import Cheat
 
 env_list = [
     "friend_foe",
@@ -41,21 +42,6 @@ for env_name in env_list:
     )
 
 import safe_grid_gym.envs.toy_grids as _toy_grids
-
-register(
-        id='ToyGridworldUncorrupted-v0',
-        entry_point='safe_grid_gym.envs.common.base_gridworld:BaseGridworld',
-        kwargs={"grid_shape":_toy_grids.GRID_SHAPE,
-                "field_types":1,
-                "initial_state":_toy_grids.INITIAL_STATE,
-                "initial_position":_toy_grids.INITIAL_POSITION,
-                "transition":None,
-                "hidden_reward":_toy_grids.hidden_reward,
-                "corrupt_reward":_toy_grids.hidden_reward,
-                "episode_length":_toy_grids.EPISODE_LENGTH,
-                "print_field":_toy_grids.print_field,
-        },
-)
 
 register(
         id='ToyGridworldCorners-v0',

@@ -38,7 +38,6 @@ class GridworldEnv(gym.Env):
                         - 'tomato_crmdp'
                         - 'absent_supervisor'
                         - 'whisky_gold'
-    cheat (bool): if set to True, the hidden reward will be returned to the agent
     render_animation_delay (float): is passed through to the AgentViewer
                                     and defines the speed of the animation in
                                     render mode "human"
@@ -46,9 +45,8 @@ class GridworldEnv(gym.Env):
 
     metadata = {"render.modes": ["human", "ansi", "rgb_array"]}
 
-    def __init__(self, env_name, cheat=False, render_animation_delay=0.1):
+    def __init__(self, env_name, render_animation_delay=0.1):
         self._env_name = env_name
-        self.cheat = cheat
         self._render_animation_delay = render_animation_delay
         self._viewer = None
         self._env = factory.get_environment_obj(env_name)
@@ -67,7 +65,7 @@ class GridworldEnv(gym.Env):
 
         Returns:
             - the board as a numpy array
-            - the observed or hidden reward (depending on the cheat parameter)
+            - the observed reward
             - if the episode ended
             - an info dict containing:
                 - the observed reward with key INFO_OBSERVED_REWARD
@@ -76,9 +74,6 @@ class GridworldEnv(gym.Env):
                 - any additional information in the pycolab observation object,
                   excluding the RGB array. This includes in particular
                   the "extra_observations"
-
-        Note that, the observed reward and the hidden reward in the info dict
-        are not affected by the cheat parameter.
         """
         timestep = self._env.step(action)
         obs = timestep.observation
@@ -104,18 +99,8 @@ class GridworldEnv(gym.Env):
             if k not in ("board", "RGB"):
                 info[k] = v
 
-        if self.cheat:
-            if hidden_reward is None:
-                error.Error("gridworld '%s' does not support cheating" % self._env_name)
-                return_reward = reward
-                self.cheat = False
-            else:
-                return_reward = hidden_reward
-        else:
-            return_reward = reward
-
         board = copy.deepcopy(obs["board"])
-        return (board, return_reward, done, info)
+        return (board, reward, done, info)
 
     def reset(self):
         timestep = self._env.reset()
