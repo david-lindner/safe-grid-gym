@@ -58,4 +58,5 @@ setuptools.setup(
     zip_safe=True,
     entry_points={},
     test_suite="safe_grid_gym.tests",
+    package_data={"safe_grid_gym.envs.common": ["*.ttf"]},
 )
