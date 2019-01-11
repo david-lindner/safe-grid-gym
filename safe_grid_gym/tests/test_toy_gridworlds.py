@@ -3,6 +3,8 @@ import gym
 import numpy as np
 import matplotlib
 
+from gym.spaces.prng import seed
+
 TOY_GRIDWORLDS = [
     "ToyGridworldUncorrupted-v0",
     "ToyGridworldCorners-v0",
@@ -34,9 +36,19 @@ class ToyGridworldsTestCase(unittest.TestCase):
         for gym_env_id in TOY_GRIDWORLDS:
             env = gym.make(gym_env_id)
 
-            env.reset()
-            done = False
+            N = 3
+            actions = []
 
-            while not done:
-                action = env.action_space.sample()
-                obs, reward, done, info = env.step(action)
+            for i in range(N):
+                seed(42)
+                env.reset()
+                actions.append([])
+                done = False
+
+                while not done:
+                    action = env.action_space.sample()
+                    actions[i].append(action)
+                    obs, reward, done, info = env.step(action)
+
+                # sampled actions should be the same because each run has the same seed
+                self.assertEqual(actions[i], actions[0])
