@@ -156,11 +156,11 @@ class BaseGridworld(gym.Env):
                 (255, 255, 255),
             )
             font_stream = resource_stream(
-                "safe_grid_gym.envs.common", "unifont-11.0.02.ttf"
+                "safe_grid_gym.envs.common", "DejaVuSansMono.ttf"
             )
             font = ImageFont.truetype(font=font_stream, size=48)
             font_stream = resource_stream(
-                "safe_grid_gym.envs.common", "unifont-11.0.02.ttf"
+                "safe_grid_gym.envs.common", "DejaVuSansMono.ttf"
             )
             smaller_font = ImageFont.truetype(font=font_stream, size=36)
             drawing = ImageDraw.Draw(image)
