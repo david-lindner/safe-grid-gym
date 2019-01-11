@@ -52,10 +52,20 @@ setuptools.setup(
         "rl "
         "reinforcement learning "
     ),
-    install_requires=["gym", "ai-safety-gridworlds", "numpy>=1.14.5"],
-    dependency_links=["https://github.com/jvmancuso/ai-safety-gridworlds/tarball/master#egg=ai-safety-gridworlds-1.2.2"],
+    install_requires=[
+        "gym",
+        "ai-safety-gridworlds",
+        "numpy>=1.14.5",
+        "pillow",
+        "matplotlib",
+    ],
+    dependency_links=[
+        "git+https://github.com/openai/gym.git#egg=gym-0.10.9",
+        "https://github.com/jvmancuso/ai-safety-gridworlds/tarball/master#egg=ai-safety-gridworlds-1.2.2",
+    ],
     packages=setuptools.find_packages(),
     zip_safe=True,
     entry_points={},
     test_suite="safe_grid_gym.tests",
+    package_data={"safe_grid_gym.envs.common": ["*.ttf"]},
 )
