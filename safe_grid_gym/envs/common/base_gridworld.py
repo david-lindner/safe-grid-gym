@@ -134,18 +134,17 @@ class BaseGridworld(gym.Env):
     def get_last_performance(self):
         return self._last_performance
 
-    def render(mode="human", close=False):
+    def render(self, mode="human", close=False):
+        """ Implements the gym render modes "rgb_array", "ansi" and "human". """
         observation = self.to_observation(self.state, self.position)
         observation_chars = [
-            [print_field(observation[c, r]) for c in range(self.grid_shape[0])]
+            [self.print_field(observation[c, r]) for c in range(self.grid_shape[0])]
             for r in reversed(range(self.grid_shape[1]))
         ]
         additional_info = "A: " + str(self.last_action) + " S: " + str(self.timestep)
-        if mode == "text":
-            sys.stdout.write(
-                "\n".join("".join(line) for line in observation_chars) + "\n"
-            )
-            sys.stdout.write(additional_info + "\n")
+        if mode == "ansi":
+            board_str = "\n".join("".join(line) for line in observation_chars)
+            return board_str + "\n" + additional_info + "\n"
         else:
             from PIL import Image, ImageDraw, ImageFont
             from pkg_resources import resource_stream
@@ -164,8 +163,8 @@ class BaseGridworld(gym.Env):
             )
             smaller_font = ImageFont.truetype(font=font_stream, size=36)
             drawing = ImageDraw.Draw(image)
-            for r in range(grid_shape[1]):
-                for c in range(grid_shape[0]):
+            for r in range(self.grid_shape[1]):
+                for c in range(self.grid_shape[0]):
                     drawing.text(
                         (c * 50, r * 50),
                         observation_chars[c][r],
@@ -173,11 +172,12 @@ class BaseGridworld(gym.Env):
                         fill=(0, 0, 0),
                     )
             drawing.text(
-                (0, grid_shape[1] * 50),
+                (0, self.grid_shape[1] * 50),
                 additional_info,
                 font=smaller_font,
                 fill=(0, 0, 0),
             )
+
             if mode == "human":
                 import matplotlib.pyplot as plt
 
@@ -185,4 +185,8 @@ class BaseGridworld(gym.Env):
                 plt.imshow(image)
                 plt.pause(0.1)
                 plt.clf()
-            return np.array(image)
+            elif mode == "rgb_array":
+                return np.array(image)
+            else:
+                # unknown mode
+                raise NotImplementedError
