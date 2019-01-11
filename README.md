@@ -25,9 +25,10 @@ You can use the code from the official `ai-safety-gridworlds` repository instead
 By using `safe_grid_gym` the AI safety gridworlds can by used like any other gym environment. For example to take 10 random actions in the boat race environment and render the gridworld, you can do:
 
 ```python
-from safe_grid_gym.envs import GridworldEnv
+import safe_grid_gym
+import gym
 
-env = GridworldEnv("boat_race")
+env = gym.make("BoatRace-v0")
 action_space = env.action_space
 
 for i in range(10):
