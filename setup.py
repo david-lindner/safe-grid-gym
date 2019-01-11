@@ -52,7 +52,13 @@ setuptools.setup(
         "rl "
         "reinforcement learning "
     ),
-    install_requires=["gym", "ai-safety-gridworlds", "numpy>=1.14.5"],
+    install_requires=[
+        "gym",
+        "ai-safety-gridworlds",
+        "numpy>=1.14.5",
+        "pillow",
+        "matplotlib",
+    ],
     dependency_links=[
         "https://github.com/jvmancuso/gym/tarball/master#egg=gym-0.10.10",
         "https://github.com/jvmancuso/ai-safety-gridworlds/tarball/master#egg=ai-safety-gridworlds-1.2.2",
