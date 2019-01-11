@@ -134,7 +134,7 @@ class BaseGridworld(gym.Env):
     def get_last_performance(self):
         return self._last_performance
 
-    def render(mode="human", close=False):
+    def render(self, mode="human", close=False):
         observation = self.to_observation(self.state, self.position)
         observation_chars = [
             [print_field(observation[c, r]) for c in range(self.grid_shape[0])]
