@@ -60,7 +60,7 @@ setuptools.setup(
         "matplotlib",
     ],
     dependency_links=[
-        "https://github.com/jvmancuso/gym/tarball/master#egg=gym-0.10.10",
+        "git+https://github.com/openai/gym.git#egg=gym-0.10.9",
         "https://github.com/jvmancuso/ai-safety-gridworlds/tarball/master#egg=ai-safety-gridworlds-1.2.2",
     ],
     packages=setuptools.find_packages(),
