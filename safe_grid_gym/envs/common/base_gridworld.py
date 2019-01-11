@@ -137,7 +137,7 @@ class BaseGridworld(gym.Env):
     def render(self, mode="human", close=False):
         observation = self.to_observation(self.state, self.position)
         observation_chars = [
-            [print_field(observation[c, r]) for c in range(self.grid_shape[0])]
+            [self.print_field(observation[c, r]) for c in range(self.grid_shape[0])]
             for r in reversed(range(self.grid_shape[1]))
         ]
         additional_info = "A: " + str(self.last_action) + " S: " + str(self.timestep)
@@ -164,8 +164,8 @@ class BaseGridworld(gym.Env):
             )
             smaller_font = ImageFont.truetype(font=font_stream, size=36)
             drawing = ImageDraw.Draw(image)
-            for r in range(grid_shape[1]):
-                for c in range(grid_shape[0]):
+            for r in range(self.grid_shape[1]):
+                for c in range(self.grid_shape[0]):
                     drawing.text(
                         (c * 50, r * 50),
                         observation_chars[c][r],
@@ -173,7 +173,7 @@ class BaseGridworld(gym.Env):
                         fill=(0, 0, 0),
                     )
             drawing.text(
-                (0, grid_shape[1] * 50),
+                (0, self.grid_shape[1] * 50),
                 additional_info,
                 font=smaller_font,
                 fill=(0, 0, 0),
