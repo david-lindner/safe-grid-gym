@@ -12,7 +12,7 @@ except ImportError:
 
 setuptools.setup(
     name="safe-grid-gym",
-    version="0.1",
+    version="0.2",
     description="A gym interface for AI safety gridworlds created in pycolab.",
     long_description=(
         "Provides an OpenAI Gym interface for the AI safety gridworlds created "
