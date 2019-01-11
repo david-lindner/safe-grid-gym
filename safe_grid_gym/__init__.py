@@ -1,20 +1,10 @@
 from gym.envs.registration import register
+from ai_safety_gridworlds.helpers.factory import _environment_classes
 
 from safe_grid_gym.envs import GridworldEnv
+import safe_grid_gym.envs.toy_grids as _toy_grids
 
-env_list = [
-    "friend_foe",
-    "conveyor_belt",
-    "boat_race",
-    "safe_interruptibility",
-    "island_navigation",
-    "distributional_shift",
-    "side_effects_sokoban",
-    "absent_supervisor",
-    "tomato_watering",
-    "tomato_crmdp",
-    "whisky_gold",
-]
+env_list = _environment_classes.keys()
 
 
 def to_gym_id(env_name):
@@ -32,14 +22,12 @@ def to_gym_id(env_name):
 
 
 for env_name in env_list:
-    gym_id_prefix = to_gym_id(env_name)
+    gym_id_prefix = to_gym_id(str(env_name))
     register(
         id=gym_id_prefix + "-v0",
         entry_point="safe_grid_gym.envs.gridworlds_env:GridworldEnv",
         kwargs={"env_name": env_name, "cheat": False},
     )
-
-import safe_grid_gym.envs.toy_grids as _toy_grids
 
 register(
     id="ToyGridworldUncorrupted-v0",
