@@ -1,7 +1,7 @@
-import gym
-from gym import spaces
 import numpy as np
-import sys
+import gym
+
+from gym import spaces
 
 from safe_grid_gym.envs.common.interface import (
     INFO_HIDDEN_REWARD,
