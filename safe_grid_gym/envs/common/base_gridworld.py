@@ -116,7 +116,8 @@ class BaseGridworld(gym.Env):
             INFO_OBSERVED_REWARD: reward,
             INFO_DISCOUNT: 1,
         }
-        print(self.timestep, self.episode_length)
+
+        # print(self.timestep, self.episode_length)
         done = self.timestep >= self.episode_length
         if done:
             if self._reset_next:
