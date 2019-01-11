@@ -6,8 +6,9 @@ env = gym.make("ToyGridworldCorners-v0")
 # env = gym.make("ToyGridworldOnTheWay-v0")
 
 env.reset()
+done = False
 
-for i in range(100):
+while not done:
     env.render()
     action = env.action_space.sample()
-    env.step(action)
+    obs, reward, done, info = env.step(action)
