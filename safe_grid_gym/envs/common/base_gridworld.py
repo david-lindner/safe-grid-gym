@@ -18,6 +18,8 @@ RIGHT = 3
 
 MOVE = {UP: [0, 1], DOWN: [0, -1], LEFT: [-1, 0], RIGHT: [1, 0]}
 
+FONT_FOR_HUMAN_RENDER = "DejaVuSansMono.ttf"
+
 
 def position_change(action):
     return MOVE[action]
@@ -155,11 +157,11 @@ class BaseGridworld(gym.Env):
                 (255, 255, 255),
             )
             font_stream = resource_stream(
-                "safe_grid_gym.envs.common", "unifont-11.0.02.ttf"
+                "safe_grid_gym.envs.common", FONT_FOR_HUMAN_RENDER
             )
             font = ImageFont.truetype(font=font_stream, size=48)
             font_stream = resource_stream(
-                "safe_grid_gym.envs.common", "unifont-11.0.02.ttf"
+                "safe_grid_gym.envs.common", FONT_FOR_HUMAN_RENDER
             )
             smaller_font = ImageFont.truetype(font=font_stream, size=36)
             drawing = ImageDraw.Draw(image)
