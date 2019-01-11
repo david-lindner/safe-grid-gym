@@ -192,4 +192,7 @@ class BaseGridworld(gym.Env):
                 return np.array(image)
             else:
                 # unknown mode
-                raise NotImplementedError
+                raise NotImplementedError(
+                    "Mode '{}' unsupported. ".format(mode)
+                    + "Mode should be in ('human', 'ansi', 'rgb_array')"
+                )
