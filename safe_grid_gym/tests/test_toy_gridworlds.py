@@ -13,6 +13,14 @@ TOY_GRIDWORLDS = [
 
 
 class ToyGridworldsTestCase(unittest.TestCase):
+    def _check_rgb(self, rgb_list):
+        first_shape = rgb_list[0].shape
+        for rgb in rgb_list:
+            self.assertIsInstance(rgb, np.ndarray)
+            self.assertEqual(len(rgb.shape), 3)
+            self.assertEqual(rgb.shape[0], 3)
+            self.assertEqual(rgb.shape, first_shape)
+
     def testRenderReturnsNotImplemented(self):
         """ If called with an undefined mode argument the render function should
         return an error. """
@@ -22,7 +30,8 @@ class ToyGridworldsTestCase(unittest.TestCase):
 
             # should give no error
             self.assertIsInstance(env.render(mode="ansi"), str)
-            self.assertIsInstance(env.render(mode="rgb_array"), np.ndarray)
+            rgb = env.render(mode="rgb_array")
+            self._check_rgb([rgb])
 
             matplotlib.use("Agg")
             env.render(mode="human")
