@@ -5,6 +5,9 @@ import matplotlib
 
 from gym.spaces.prng import seed
 
+from safe_grid_gym.envs.common.base_gridworld import UP, DOWN, LEFT, RIGHT
+from safe_grid_gym.envs.common.interface import INFO_HIDDEN_REWARD
+
 TOY_GRIDWORLDS = [
     "ToyGridworldUncorrupted-v0",
     "ToyGridworldCorners-v0",
@@ -13,6 +16,20 @@ TOY_GRIDWORLDS = [
 
 
 class ToyGridworldsTestCase(unittest.TestCase):
+    def _check_rgb(self, rgb_list):
+        first_shape = rgb_list[0].shape
+        for rgb in rgb_list:
+            self.assertIsInstance(rgb, np.ndarray)
+            self.assertEqual(len(rgb.shape), 3)
+            self.assertEqual(rgb.shape[0], 3)
+            self.assertEqual(rgb.shape, first_shape)
+
+    def _check_step(self, res, expected_done, expected_reward, expected_hidden_reward):
+        obs, reward, done, info = res
+        self.assertEqual(done, expected_done)
+        self.assertEqual(reward, expected_reward)
+        self.assertEqual(info[INFO_HIDDEN_REWARD], expected_hidden_reward)
+
     def testRenderReturnsNotImplemented(self):
         """ If called with an undefined mode argument the render function should
         return an error. """
@@ -22,7 +39,8 @@ class ToyGridworldsTestCase(unittest.TestCase):
 
             # should give no error
             self.assertIsInstance(env.render(mode="ansi"), str)
-            self.assertIsInstance(env.render(mode="rgb_array"), np.ndarray)
+            rgb = env.render(mode="rgb_array")
+            self._check_rgb([rgb])
 
             matplotlib.use("Agg")
             env.render(mode="human")
@@ -52,3 +70,99 @@ class ToyGridworldsTestCase(unittest.TestCase):
 
                 # sampled actions should be the same because each run has the same seed
                 self.assertEqual(actions[i], actions[0])
+
+    def testCornersCorrupt(self):
+        """ Check reward along some basic trajectories. """
+        env = gym.make("ToyGridworldCorners-v0")
+        env.reset()
+
+        demonstrations = []
+
+        steps = [UP, UP, UP, UP, LEFT, LEFT, LEFT, LEFT]
+        results = [
+            (False, 6, 6),
+            (False, 6, 6),
+            (False, 6, 6),
+            (False, 11, 6),
+            (False, 7, 7),
+            (False, 8, 8),
+            (False, 9, 9),
+            (True, 10, 10),
+        ]
+
+        demonstrations.append((steps, results))
+
+        steps = [UP, LEFT, UP, LEFT, UP, LEFT, UP, LEFT, UP, LEFT]
+        results = [
+            (False, 6, 6),
+            (False, 7, 7),
+            (False, 7, 7),
+            (False, 8, 8),
+            (False, 8, 8),
+            (False, 9, 9),
+            (False, 9, 9),
+            (True, 10, 10),
+        ]
+
+        demonstrations.append((steps, results))
+
+        steps = [RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT, RIGHT]
+        results = [
+            (False, 6, 6),
+            (False, 6, 6),
+            (False, 6, 6),
+            (False, 6, 6),
+            (False, 6, 6),
+            (False, 6, 6),
+            (False, 6, 6),
+            (True, 6, 6),
+        ]
+
+        demonstrations.append((steps, results))
+
+        for steps, exp_res in demonstrations:
+            env.reset()
+            for step, exp_res in zip(steps, exp_res):
+                res = env.step(step)
+                self._check_step(res, *exp_res)
+
+    def testWayCorrupt(self):
+        """ Check reward along some basic trajectories. """
+        env = gym.make("ToyGridworldOnTheWay-v0")
+        env.reset()
+
+        demonstrations = []
+
+        steps = [UP, UP, UP, UP, LEFT, LEFT, LEFT, LEFT]
+        results = [
+            (False, 6, 6),
+            (False, 6, 6),
+            (False, 6, 6),
+            (False, 11, 6),
+            (False, 7, 7),
+            (False, 8, 8),
+            (False, 9, 9),
+            (True, 10, 10),
+        ]
+
+        demonstrations.append((steps, results))
+
+        steps = [UP, LEFT, UP, LEFT, UP, LEFT, UP, LEFT, UP, LEFT]
+        results = [
+            (False, 6, 6),
+            (False, 7, 7),
+            (False, 7, 7),
+            (False, 8, 8),
+            (False, 11, 8),
+            (False, 9, 9),
+            (False, 9, 9),
+            (True, 10, 10),
+        ]
+
+        demonstrations.append((steps, results))
+
+        for steps, exp_res in demonstrations:
+            env.reset()
+            for step, exp_res in zip(steps, exp_res):
+                res = env.step(step)
+                self._check_step(res, *exp_res)

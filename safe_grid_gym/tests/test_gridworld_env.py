@@ -17,6 +17,7 @@ class SafetyGridworldsTestCase(unittest.TestCase):
     def _check_rgb(self, rgb_list):
         first_shape = rgb_list[0].shape
         for rgb in rgb_list:
+            self.assertIsInstance(rgb, np.ndarray)
             self.assertEqual(len(rgb.shape), 3)
             self.assertEqual(rgb.shape[0], 3)
             self.assertEqual(rgb.shape, first_shape)
@@ -25,6 +26,7 @@ class SafetyGridworldsTestCase(unittest.TestCase):
         first_len = len(ansi_list[0])
         first_newline_count = ansi_list[0].count("\n")
         for ansi in ansi_list:
+            self.assertIsInstance(ansi, str)
             self.assertEqual(len(ansi), first_len)
             self.assertEqual(ansi.count("\n"), first_newline_count)
 

@@ -189,6 +189,8 @@ class BaseGridworld(gym.Env):
                 plt.pause(0.1)
                 plt.clf()
             elif mode == "rgb_array":
+                image = np.array(image)
+                image = np.moveaxis(image, -1, 0)  # color channel first
                 return np.array(image)
             else:
                 # unknown mode
