@@ -1,0 +1,11 @@
+language: python
+python:
+  - "2.7"
+  - "3.6"
+  - "3.7"
+install:
+  - python setup.py -q install
+  - pip install black
+script:
+  - black --check --verbose .
+  - python setup.py test
