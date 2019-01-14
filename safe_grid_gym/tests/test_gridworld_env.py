@@ -42,7 +42,6 @@ class SafetyGridworldsTestCase(unittest.TestCase):
     def _check_rewards(
         self,
         env,
-        cheat,
         demo,
         epsiode_info_observed_return,
         episode_info_hidden_return,
@@ -57,10 +56,7 @@ class SafetyGridworldsTestCase(unittest.TestCase):
             self.assertEqual(episode_info_hidden_return, demo.safety_performance)
             self.assertEqual(episode_info_hidden_return, hidden_reward)
 
-        if cheat and hidden_reward is not None:
-            self.assertEqual(episode_info_hidden_return, episode_return)
-        else:
-            self.assertEqual(epsiode_info_observed_return, episode_return)
+        self.assertEqual(epsiode_info_observed_return, episode_return)
 
     def setUp(self):
         self.demonstrations = {}
@@ -119,8 +115,7 @@ class SafetyGridworldsTestCase(unittest.TestCase):
     def testWithDemonstrations(self):
         """
         Run demonstrations in the safety gridworlds and perform sanity checks
-        on rewards (with and without cheating), episode termination and the
-        "ansi" and "rgb_array" render modes.
+        on rewards, episode termination and the "ansi" and "rgb_array" render modes.
         """
 
         repititions = 10
@@ -128,50 +123,48 @@ class SafetyGridworldsTestCase(unittest.TestCase):
         for env_name, demos in self.demonstrations.items():
             for demo in demos:
                 for i in range(repititions):
-                    for cheat in (True, False):
-                        # need to use np seed instead of the environment seed function
-                        # to be consistent with the seeds given in the demonstrations
-                        np.random.seed(demo.seed)
-                        env = GridworldEnv(env_name, cheat=cheat)
+                    # need to use np seed instead of the environment seed function
+                    # to be consistent with the seeds given in the demonstrations
+                    np.random.seed(demo.seed)
+                    env = GridworldEnv(env_name)
 
-                        actions = demo.actions
-                        env.reset()
-                        done = False
+                    actions = demo.actions
+                    env.reset()
+                    done = False
 
-                        episode_return = 0
-                        epsiode_info_observed_return = 0
-                        episode_info_hidden_return = 0
+                    episode_return = 0
+                    epsiode_info_observed_return = 0
+                    episode_info_hidden_return = 0
 
-                        rgb_list = [env.render("rgb_array")]
-                        ansi_list = [env.render("ansi")]
+                    rgb_list = [env.render("rgb_array")]
+                    ansi_list = [env.render("ansi")]
 
-                        for action in actions:
-                            self.assertFalse(done)
+                    for action in actions:
+                        self.assertFalse(done)
 
-                            (obs, reward, done, info) = env.step(action)
-                            episode_return += reward
-                            epsiode_info_observed_return += info[INFO_OBSERVED_REWARD]
+                        (obs, reward, done, info) = env.step(action)
+                        episode_return += reward
+                        epsiode_info_observed_return += info[INFO_OBSERVED_REWARD]
 
-                            if info[INFO_HIDDEN_REWARD] is not None:
-                                episode_info_hidden_return += info[INFO_HIDDEN_REWARD]
+                        if info[INFO_HIDDEN_REWARD] is not None:
+                            episode_info_hidden_return += info[INFO_HIDDEN_REWARD]
 
-                            rgb_list.append(env.render("rgb_array"))
-                            ansi_list.append(env.render("ansi"))
-                            self._check_action_observation_valid(env, action, obs)
-                            self._check_reward(env, reward)
+                        rgb_list.append(env.render("rgb_array"))
+                        ansi_list.append(env.render("ansi"))
+                        self._check_action_observation_valid(env, action, obs)
+                        self._check_reward(env, reward)
 
-                        self.assertEqual(done, demo.terminates)
-                        self._check_rewards(
-                            env,
-                            cheat,
-                            demo,
-                            epsiode_info_observed_return,
-                            episode_info_hidden_return,
-                            episode_return,
-                        )
+                    self.assertEqual(done, demo.terminates)
+                    self._check_rewards(
+                        env,
+                        demo,
+                        epsiode_info_observed_return,
+                        episode_info_hidden_return,
+                        episode_return,
+                    )
 
-                        self._check_rgb(rgb_list)
-                        self._check_ansi(ansi_list)
+                    self._check_rgb(rgb_list)
+                    self._check_ansi(ansi_list)
 
 
 if __name__ == "__main__":
