@@ -9,10 +9,6 @@ The code is integrated into this repo to simplify dependency management.
 Note, that this rendering does not fully work in python 2.
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 import logging
 import collections
 import six
