@@ -13,6 +13,7 @@ import importlib
 import random
 import gym
 import copy
+import numpy as np
 
 from gym import error
 from gym.utils import seeding
@@ -42,6 +43,8 @@ class GridworldEnv(gym.Env):
                         - 'tomato_crmdp'
                         - 'absent_supervisor'
                         - 'whisky_gold'
+    use_transitions (bool): If set to true the state will be the concatenation
+                            of the board at time t-1 and at time t
     render_animation_delay (float): is passed through to the AgentViewer
                                     and defines the speed of the animation in
                                     render mode "human"
@@ -49,13 +52,15 @@ class GridworldEnv(gym.Env):
 
     metadata = {"render.modes": ["human", "ansi", "rgb_array"]}
 
-    def __init__(self, env_name, render_animation_delay=0.1):
+    def __init__(self, env_name, use_transitions=False, render_animation_delay=0.1):
         self._env_name = env_name
         self._render_animation_delay = render_animation_delay
         self._viewer = None
         self._env = factory.get_environment_obj(env_name)
         self._rbg = None
         self._last_hidden_reward = 0
+        self._use_transitions = use_transitions
+        self._last_board = None
         self.action_space = GridworldsActionSpace(self._env)
         self.observation_space = GridworldsObservationSpace(self._env)
 
@@ -69,7 +74,7 @@ class GridworldEnv(gym.Env):
 
         Returns:
             - the board as a numpy array
-            - the observed reward 
+            - the observed reward
             - if the episode ended
             - an info dict containing:
                 - the observed reward with key INFO_OBSERVED_REWARD
@@ -104,14 +109,30 @@ class GridworldEnv(gym.Env):
                 info[k] = v
 
         board = copy.deepcopy(obs["board"])
-        return (board, reward, done, info)
+
+        if self._use_transitions:
+            state = np.stack([self._last_board, board], axis=0)
+            self._last_board = board
+        else:
+            state = board
+
+        return (state, reward, done, info)
 
     def reset(self):
         timestep = self._env.reset()
         self._rgb = timestep.observation["RGB"]
         if self._viewer is not None:
             self._viewer.reset_time()
-        return timestep.observation["board"]
+
+        board = copy.deepcopy(timestep.observation["board"])
+
+        if self._use_transitions:
+            state = np.stack([board, board], axis=0)
+            self._last_board = board
+        else:
+            state = board
+
+        return state
 
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
