@@ -13,6 +13,7 @@ This repository combines and extends two previous implementations which can be f
    - Additional toy environments
    - Additional features for the Gym environment:
       - Additional render modes `ansi` and `rgb_array` allowing for more automated experimentation
+      - A `TransitionBoatRace` environments which provides the last two boards as state information
    - Easier dependency management by providing a `setup.py`
    - Unittests for the Gym environment using the demonstrations provided by in the `ai-safety-gridworlds` repository
 

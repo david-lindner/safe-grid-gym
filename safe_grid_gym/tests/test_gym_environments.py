@@ -13,6 +13,8 @@ class GymEnvironemntTestCase(unittest.TestCase):
             to_gym_id(name) + "-v0" for name in _environment_classes.keys()
         ]
 
+        safety_gridworlds.append("TransitionBoatRace-v0")
+
         toy_gridworlds = [
             "ToyGridworldUncorrupted-v0",
             "ToyGridworldCorners-v0",
