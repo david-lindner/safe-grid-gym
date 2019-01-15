@@ -2,6 +2,7 @@ language: python
 dist: xenial
 cache: pip
 python:
+  - "3.5"
   - "3.6"
 install:
   - python setup.py install
