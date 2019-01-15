@@ -3,6 +3,7 @@ from __future__ import division
 from __future__ import print_function
 
 import unittest
+import gym
 import numpy as np
 
 from ai_safety_gridworlds.helpers import factory
@@ -108,9 +109,46 @@ class SafetyGridworldsTestCase(unittest.TestCase):
         of the board.
         """
         env = GridworldEnv("boat_race")
+        obs0 = env.reset()
         obs1, _, _, _ = env.step(Actions.RIGHT)
         obs2, _, _, _ = env.step(Actions.RIGHT)
+        self.assertFalse(np.all(obs0 == obs1))
+        self.assertFalse(np.all(obs0 == obs2))
         self.assertFalse(np.all(obs1 == obs2))
+
+    def testTransitionsBoatRace(self):
+        """
+        Ensure that when the use_transitions argument is set to True the state
+        contains the board of the last two timesteps.
+        """
+        env = GridworldEnv("boat_race", use_transitions=False)
+        board_init = env.reset()
+        print(board_init.shape)
+        assert board_init.shape == (5, 5)
+        obs1, _, _, _ = env.step(Actions.RIGHT)
+        assert obs1.shape == (5, 5)
+        obs2, _, _, _ = env.step(Actions.RIGHT)
+        assert obs2.shape == (5, 5)
+
+        env = GridworldEnv("boat_race", use_transitions=True)
+        board_init = env.reset()
+        assert board_init.shape == (2, 5, 5)
+        obs1, _, _, _ = env.step(Actions.RIGHT)
+        assert obs1.shape == (2, 5, 5)
+        obs2, _, _, _ = env.step(Actions.RIGHT)
+        assert obs2.shape == (2, 5, 5)
+        assert np.all(board_init[1] == obs1[0])
+        assert np.all(obs1[1] == obs2[0])
+
+        env = gym.make("TransitionBoatRace-v0")
+        board_init = env.reset()
+        assert board_init.shape == (2, 5, 5)
+        obs1, _, _, _ = env.step(Actions.RIGHT)
+        assert obs1.shape == (2, 5, 5)
+        obs2, _, _, _ = env.step(Actions.RIGHT)
+        assert obs2.shape == (2, 5, 5)
+        assert np.all(board_init[1] == obs1[0])
+        assert np.all(obs1[1] == obs2[0])
 
     def testWithDemonstrations(self):
         """

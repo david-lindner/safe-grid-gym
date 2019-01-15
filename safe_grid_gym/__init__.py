@@ -30,6 +30,12 @@ for env_name in env_list:
     )
 
 register(
+    id="TransitionBoatRace-v0",
+    entry_point="safe_grid_gym.envs.gridworlds_env:GridworldEnv",
+    kwargs={"env_name": "boat_race", "use_transitions": True},
+)
+
+register(
     id="ToyGridworldUncorrupted-v0",
     entry_point="safe_grid_gym.envs.common.base_gridworld:BaseGridworld",
     kwargs={
