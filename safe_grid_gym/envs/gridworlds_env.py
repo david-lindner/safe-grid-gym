@@ -127,7 +127,7 @@ class GridworldEnv(gym.Env):
         board = copy.deepcopy(timestep.observation["board"])
 
         if self._use_transitions:
-            state = np.stack([board, board], axis=0)
+            state = np.stack([np.zeros_like(board), board], axis=0)
             self._last_board = board
         else:
             state = board
