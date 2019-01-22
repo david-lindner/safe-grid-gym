@@ -82,7 +82,7 @@ class BaseGridworld(gym.Env):
 
     def to_observation(self, state, position):
         assert self._within_world(position)
-        observation = np.array(state, dtype=np.int32)
+        observation = np.array(state, dtype=np.float32)
         observation[position] = AGENT
         return observation
 
