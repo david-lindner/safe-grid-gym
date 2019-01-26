@@ -23,6 +23,9 @@ class ToyGridworldsTestCase(unittest.TestCase):
             self.assertEqual(len(rgb.shape), 3)
             self.assertEqual(rgb.shape[0], 3)
             self.assertEqual(rgb.shape, first_shape)
+            # should only be grayscale
+            self.assertTrue(np.all(rgb[0] - rgb[1] == 0))
+            self.assertTrue(np.all(rgb[1] - rgb[2] == 0))
 
     def _check_step(self, res, expected_done, expected_reward, expected_hidden_reward):
         obs, reward, done, info = res
@@ -119,12 +122,17 @@ class ToyGridworldsTestCase(unittest.TestCase):
         ]
 
         demonstrations.append((steps, results))
+        rgb_list = []
 
         for steps, exp_res in demonstrations:
             env.reset()
             for step, exp_res in zip(steps, exp_res):
                 res = env.step(step)
                 self._check_step(res, *exp_res)
+                rgb = env.render(mode="rgb_array")
+                rgb_list.append(rgb)
+
+        self._check_rgb(rgb_list)
 
     def testWayCorrupt(self):
         """ Check reward along some basic trajectories. """
@@ -161,8 +169,14 @@ class ToyGridworldsTestCase(unittest.TestCase):
 
         demonstrations.append((steps, results))
 
+        rgb_list = []
+
         for steps, exp_res in demonstrations:
             env.reset()
             for step, exp_res in zip(steps, exp_res):
                 res = env.step(step)
                 self._check_step(res, *exp_res)
+                rgb = env.render(mode="rgb_array")
+                rgb_list.append(rgb)
+
+        self._check_rgb(rgb_list)

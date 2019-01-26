@@ -17,6 +17,7 @@ LEFT = 2
 RIGHT = 3
 
 MOVE = {UP: [0, 1], DOWN: [0, -1], LEFT: [-1, 0], RIGHT: [1, 0]}
+MOVE_NAME = {UP: "North", DOWN: "South", LEFT: "West", RIGHT: "East"}
 
 FONT_FOR_HUMAN_RENDER = "DejaVuSansMono.ttf"
 
@@ -81,7 +82,7 @@ class BaseGridworld(gym.Env):
 
     def to_observation(self, state, position, dtype=np.float32):
         assert self._within_world(position)
-        observation = np.array(state, dtype=dtype)
+        observation = np.array(state, dtype=np.float32)
         observation[position] = AGENT
         return observation
 
@@ -144,7 +145,12 @@ class BaseGridworld(gym.Env):
             [self.print_field(observation[c, r]) for c in range(self.grid_shape[0])]
             for r in reversed(range(self.grid_shape[1]))
         ]
-        additional_info = "A: " + str(self.last_action) + " S: " + str(self.timestep)
+        last_action_string = (
+            MOVE_NAME[self.last_action] if self.last_action is not None else ""
+        )
+        additional_info = "{move: <6} at t = {time}".format(
+            move=last_action_string, time=str(self.timestep)
+        )
         if mode == "ansi":
             board_str = "\n".join("".join(line) for line in observation_chars)
             return board_str + "\n" + additional_info + "\n"
@@ -164,18 +170,18 @@ class BaseGridworld(gym.Env):
             font_stream = resource_stream(
                 "safe_grid_gym.envs.common", FONT_FOR_HUMAN_RENDER
             )
-            smaller_font = ImageFont.truetype(font=font_stream, size=36)
+            smaller_font = ImageFont.truetype(font=font_stream, size=24)
             drawing = ImageDraw.Draw(image)
             for r in range(self.grid_shape[1]):
                 for c in range(self.grid_shape[0]):
                     drawing.text(
-                        (c * 50, r * 50),
+                        (r * 50, c * 50),
                         observation_chars[c][r],
                         font=font,
                         fill=(0, 0, 0),
                     )
             drawing.text(
-                (0, self.grid_shape[1] * 50),
+                (0, self.grid_shape[1] * 50 + 5),
                 additional_info,
                 font=smaller_font,
                 fill=(0, 0, 0),

@@ -9,6 +9,7 @@ import importlib
 import random
 import gym
 import copy
+import numpy as np
 
 from gym import error
 from gym.utils import seeding
@@ -38,7 +39,8 @@ class GridworldEnv(gym.Env):
                         - 'tomato_crmdp'
                         - 'absent_supervisor'
                         - 'whisky_gold'
-    cheat (bool): if set to True, the hidden reward will be returned to the agent
+    use_transitions (bool): If set to true the state will be the concatenation
+                            of the board at time t-1 and at time t
     render_animation_delay (float): is passed through to the AgentViewer
                                     and defines the speed of the animation in
                                     render mode "human"
@@ -46,14 +48,15 @@ class GridworldEnv(gym.Env):
 
     metadata = {"render.modes": ["human", "ansi", "rgb_array"]}
 
-    def __init__(self, env_name, cheat=False, render_animation_delay=0.1):
+    def __init__(self, env_name, use_transitions=False, render_animation_delay=0.1):
         self._env_name = env_name
-        self.cheat = cheat
         self._render_animation_delay = render_animation_delay
         self._viewer = None
         self._env = factory.get_environment_obj(env_name)
         self._rbg = None
         self._last_hidden_reward = 0
+        self._use_transitions = use_transitions
+        self._last_board = None
         self.action_space = GridworldsActionSpace(self._env)
         self.observation_space = GridworldsObservationSpace(self._env)
 
@@ -67,7 +70,7 @@ class GridworldEnv(gym.Env):
 
         Returns:
             - the board as a numpy array
-            - the observed or hidden reward (depending on the cheat parameter)
+            - the observed reward
             - if the episode ended
             - an info dict containing:
                 - the observed reward with key INFO_OBSERVED_REWARD
@@ -76,9 +79,6 @@ class GridworldEnv(gym.Env):
                 - any additional information in the pycolab observation object,
                   excluding the RGB array. This includes in particular
                   the "extra_observations"
-
-        Note that, the observed reward and the hidden reward in the info dict
-        are not affected by the cheat parameter.
         """
         timestep = self._env.step(action)
         obs = timestep.observation
@@ -104,25 +104,31 @@ class GridworldEnv(gym.Env):
             if k not in ("board", "RGB"):
                 info[k] = v
 
-        if self.cheat:
-            if hidden_reward is None:
-                error.Error("gridworld '%s' does not support cheating" % self._env_name)
-                return_reward = reward
-                self.cheat = False
-            else:
-                return_reward = hidden_reward
-        else:
-            return_reward = reward
-
         board = copy.deepcopy(obs["board"])
-        return (board, return_reward, done, info)
+
+        if self._use_transitions:
+            state = np.stack([self._last_board, board], axis=0)
+            self._last_board = board
+        else:
+            state = board
+
+        return (state, reward, done, info)
 
     def reset(self):
         timestep = self._env.reset()
         self._rgb = timestep.observation["RGB"]
         if self._viewer is not None:
             self._viewer.reset_time()
-        return timestep.observation["board"]
+
+        board = copy.deepcopy(timestep.observation["board"])
+
+        if self._use_transitions:
+            state = np.stack([np.zeros_like(board), board], axis=0)
+            self._last_board = board
+        else:
+            state = board
+
+        return state
 
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
