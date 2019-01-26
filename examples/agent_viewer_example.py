@@ -5,10 +5,6 @@ interface.
 This was taken from https://github.com/n0p2/ai-safety-gridworlds-viewer
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 import argparse
 import logging
 import importlib

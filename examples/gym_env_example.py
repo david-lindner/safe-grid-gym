@@ -4,10 +4,6 @@ Example demonstrating the usage of the Gym interface.
 This was adapted from https://github.com/n0p2/gym_ai_safety_gridworlds
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 import argparse
 import gym
 import logging

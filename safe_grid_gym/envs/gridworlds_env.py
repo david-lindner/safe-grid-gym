@@ -5,10 +5,6 @@ GridworldEnv is based on an implementation by n0p2.
 The original repo can be found at https://github.com/n0p2/gym_ai_safety_gridworlds
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 import importlib
 import random
 import gym
