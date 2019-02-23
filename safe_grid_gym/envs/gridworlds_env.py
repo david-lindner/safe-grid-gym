@@ -110,7 +110,7 @@ class GridworldEnv(gym.Env):
             state = np.stack([self._last_board, board], axis=0)
             self._last_board = board
         else:
-            state = board
+            state = board[np.newaxis, :]
 
         return (state, reward, done, info)
 
@@ -126,7 +126,7 @@ class GridworldEnv(gym.Env):
             state = np.stack([np.zeros_like(board), board], axis=0)
             self._last_board = board
         else:
-            state = board
+            state = board[np.newaxis, :]
 
         return state
 

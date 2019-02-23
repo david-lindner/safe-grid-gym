@@ -94,7 +94,7 @@ class BaseGridworld(gym.Env):
         self._episode_return = 0.0
         self._hidden_return = 0.0
         self._reset_next = False
-        return self.to_observation(self.state, self.position)
+        return self.to_observation(self.state, self.position)[np.newaxis, :]
 
     def _transition(self, state, position, action):
         pos = np.array(position)
@@ -127,7 +127,7 @@ class BaseGridworld(gym.Env):
                 raise RuntimeError("Failed to reset after end of episode.")
             self._last_performance = self._hidden_return
             self._reset_next = True
-        obs = self.to_observation(self.state, self.position)
+        obs = self.to_observation(self.state, self.position)[np.newaxis, :]
 
         return obs, reward, done, info
 
