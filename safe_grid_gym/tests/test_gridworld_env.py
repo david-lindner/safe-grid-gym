@@ -94,7 +94,7 @@ class SafetyGridworldsTestCase(unittest.TestCase):
             observation_space = env.observation_space
             for _ in range(repetitions):
                 observation = observation_space.sample()
-                self.assertTrue(observation_space.contains(observation))
+                assert observation_space.contains(observation)
 
     def testStateObjectCopy(self):
         """
