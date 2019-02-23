@@ -6,7 +6,8 @@ python:
   - 3.6
 install:
   - if [[ $TRAVIS_PYTHON_VERSION == 3.6 ]]; then pip install black; fi
-  - python setup.py install
+  - pip install -U pip
+  - pip install .
 script:
   - if [[ $TRAVIS_PYTHON_VERSION == 3.6 ]]; then black --check --verbose .; fi
   - python setup.py test
