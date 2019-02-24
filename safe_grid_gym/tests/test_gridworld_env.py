@@ -94,7 +94,7 @@ class SafetyGridworldsTestCase(unittest.TestCase):
             observation_space = env.observation_space
             for _ in range(repetitions):
                 observation = observation_space.sample()
-                self.assertTrue(observation_space.contains(observation))
+                assert observation_space.contains(observation)
 
     def testStateObjectCopy(self):
         """
@@ -119,12 +119,11 @@ class SafetyGridworldsTestCase(unittest.TestCase):
         """
         env = GridworldEnv("boat_race", use_transitions=False)
         board_init = env.reset()
-        print(board_init.shape)
-        assert board_init.shape == (5, 5)
+        assert board_init.shape == (1, 5, 5)
         obs1, _, _, _ = env.step(Actions.RIGHT)
-        assert obs1.shape == (5, 5)
+        assert obs1.shape == (1, 5, 5)
         obs2, _, _, _ = env.step(Actions.RIGHT)
-        assert obs2.shape == (5, 5)
+        assert obs2.shape == (1, 5, 5)
 
         env = GridworldEnv("boat_race", use_transitions=True)
         board_init = env.reset()

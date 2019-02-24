@@ -58,7 +58,7 @@ class GridworldEnv(gym.Env):
         self._use_transitions = use_transitions
         self._last_board = None
         self.action_space = GridworldsActionSpace(self._env)
-        self.observation_space = GridworldsObservationSpace(self._env)
+        self.observation_space = GridworldsObservationSpace(self._env, use_transitions)
 
     def close(self):
         if self._viewer is not None:
@@ -110,7 +110,7 @@ class GridworldEnv(gym.Env):
             state = np.stack([self._last_board, board], axis=0)
             self._last_board = board
         else:
-            state = board
+            state = board[np.newaxis, :]
 
         return (state, reward, done, info)
 
@@ -126,7 +126,7 @@ class GridworldEnv(gym.Env):
             state = np.stack([np.zeros_like(board), board], axis=0)
             self._last_board = board
         else:
-            state = board
+            state = board[np.newaxis, :]
 
         return state
 
@@ -195,9 +195,13 @@ class GridworldsActionSpace(gym.Space):
 
 
 class GridworldsObservationSpace(gym.Space):
-    def __init__(self, env):
+    def __init__(self, env, use_transitions):
         self.observation_spec_dict = env.observation_spec()
-        shape = self.observation_spec_dict["board"].shape
+        self.use_transitions = use_transitions
+        if self.use_transitions:
+            shape = (2, *self.observation_spec_dict["board"].shape)
+        else:
+            shape = (1, *self.observation_spec_dict["board"].shape)
         dtype = self.observation_spec_dict["board"].dtype
         super(GridworldsObservationSpace, self).__init__(shape=shape, dtype=dtype)
 
@@ -206,18 +210,24 @@ class GridworldsObservationSpace(gym.Space):
         Use pycolab to generate an example observation. Note that this is not a
         random sample, but might return the same observation for every call.
         """
+        if self.use_transitions:
+            raise NotImplementedError(
+                "Sampling from transition-based envs not yet supported."
+            )
         observation = {}
         for key, spec in self.observation_spec_dict.items():
             if spec == {}:
                 observation[key] = {}
             else:
                 observation[key] = spec.generate_value()
-        return observation["board"]
+        return observation["board"][np.newaxis, :]
 
     def contains(self, x):
         if "board" in self.observation_spec_dict.keys():
             try:
-                self.observation_spec_dict["board"].validate(x)
+                self.observation_spec_dict["board"].validate(x[0, ...])
+                if self.use_transitions:
+                    self.observation_spec_dict["board"].validate(x[1, ...])
                 return True
             except ValueError:
                 return False
