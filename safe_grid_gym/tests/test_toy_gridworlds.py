@@ -2,6 +2,7 @@ import unittest
 import gym
 import numpy as np
 import matplotlib
+import random
 
 
 from safe_grid_gym.envs.common.base_gridworld import UP, DOWN, LEFT, RIGHT
@@ -59,6 +60,8 @@ class ToyGridworldsTestCase(unittest.TestCase):
             actions = []
 
             for i in range(N):
+                random.seed(42)
+                np.random.seed(42)
                 env = gym.make(gym_env_id)
                 env.seed(42)
                 env.reset()
