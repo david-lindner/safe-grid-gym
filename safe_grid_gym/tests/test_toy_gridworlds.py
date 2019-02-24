@@ -54,14 +54,14 @@ class ToyGridworldsTestCase(unittest.TestCase):
     def testWithRandomMoves(self):
         """ Just makes sure that nothing crashes if we make random moves. """
         for gym_env_id in TOY_GRIDWORLDS:
-            env = gym.make(gym_env_id)
 
             N = 3
             actions = []
 
             for i in range(N):
-                env.reset()
+                env = gym.make(gym_env_id)
                 env.seed(42)
+                env.reset()
                 actions.append([])
                 done = False
 
