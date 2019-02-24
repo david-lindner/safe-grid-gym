@@ -64,6 +64,8 @@ class ToyGridworldsTestCase(unittest.TestCase):
                 np.random.seed(42)
                 env = gym.make(gym_env_id)
                 env.seed(42)
+                env.action_space.seed(42)
+                env.observation_space.seed(42)
                 env.reset()
                 actions.append([])
                 done = False
