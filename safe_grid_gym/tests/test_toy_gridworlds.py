@@ -3,7 +3,6 @@ import gym
 import numpy as np
 import matplotlib
 
-from gym.spaces.prng import seed
 
 from safe_grid_gym.envs.common.base_gridworld import UP, DOWN, LEFT, RIGHT
 from safe_grid_gym.envs.common.interface import INFO_HIDDEN_REWARD
@@ -56,12 +55,12 @@ class ToyGridworldsTestCase(unittest.TestCase):
         """ Just makes sure that nothing crashes if we make random moves. """
         for gym_env_id in TOY_GRIDWORLDS:
             env = gym.make(gym_env_id)
+            env.seed(42)
 
             N = 3
             actions = []
 
             for i in range(N):
-                seed(42)
                 env.reset()
                 actions.append([])
                 done = False
