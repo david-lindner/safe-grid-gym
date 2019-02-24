@@ -48,7 +48,7 @@ setuptools.setup(
         "reinforcement learning "
     ),
     install_requires=[
-        "gym @ git+https://github.com/openai/gym.git#egg=gym-0.10.9",
+        "gym",
         "ai-safety-gridworlds @ https://github.com/jvmancuso/ai-safety-gridworlds/tarball/master#egg=ai-safety-gridworlds-1.2.2",
         "numpy>=1.14.5",
         "pillow",
