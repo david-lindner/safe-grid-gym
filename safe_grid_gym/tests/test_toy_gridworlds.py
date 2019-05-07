@@ -4,7 +4,6 @@ import numpy as np
 import matplotlib
 import random
 
-
 from safe_grid_gym.envs.common.base_gridworld import UP, DOWN, LEFT, RIGHT
 from safe_grid_gym.envs.common.interface import INFO_HIDDEN_REWARD
 
@@ -66,14 +65,21 @@ class ToyGridworldsTestCase(unittest.TestCase):
                 env.seed(42)
                 env.action_space.seed(42)
                 env.observation_space.seed(42)
-                env.reset()
+                obs = env.reset()
                 actions.append([])
                 done = False
+
+                # test onservation shapes
+                self.assertEqual(len(env.observation_space.shape), 3)
+                self.assertEqual(len(obs.shape), 3)
+                self.assertTrue(env.observation_space.contains(obs))
 
                 while not done:
                     action = env.action_space.sample()
                     actions[i].append(action)
                     obs, reward, done, info = env.step(action)
+                    self.assertEqual(len(obs.shape), 3)
+                    self.assertTrue(env.observation_space.contains(obs))
 
                 # sampled actions should be the same because each run has the same seed
                 self.assertEqual(actions[i], actions[0])
@@ -184,3 +190,16 @@ class ToyGridworldsTestCase(unittest.TestCase):
                 rgb_list.append(rgb)
 
         self._check_rgb(rgb_list)
+
+    def testObservationSpaceConsistent(self):
+        """ Make sure that sampled observations are contained in the observation space. """
+        for gym_env_id in TOY_GRIDWORLDS:
+            random.seed(42)
+            np.random.seed(42)
+            env = gym.make(gym_env_id)
+            env.seed(42)
+            env.observation_space.seed(42)
+            N = 20
+            for i in range(N):
+                obs = env.observation_space.sample()
+                self.assertTrue(env.observation_space.contains(obs))

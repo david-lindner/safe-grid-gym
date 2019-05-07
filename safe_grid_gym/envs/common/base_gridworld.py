@@ -41,9 +41,10 @@ class BaseGridworld(gym.Env):
     ):
         self.action_space = spaces.Discrete(4)
         assert field_types >= 1
-        self.observation_space = spaces.MultiDiscrete(
-            np.zeros(grid_shape) + field_types + 1
-        )  # All field types plus the agent's position
+        # All field types plus the agent's position
+        obs_space = np.zeros(grid_shape) + field_types + 1
+        obs_space = np.reshape(obs_space, [1] + list(obs_space.shape))
+        self.observation_space = spaces.MultiDiscrete(obs_space)
 
         self.grid_shape = grid_shape
         self.field_types = field_types
