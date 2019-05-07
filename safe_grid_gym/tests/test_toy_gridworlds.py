@@ -4,7 +4,6 @@ import numpy as np
 import matplotlib
 import random
 
-
 from safe_grid_gym.envs.common.base_gridworld import UP, DOWN, LEFT, RIGHT
 from safe_grid_gym.envs.common.interface import INFO_HIDDEN_REWARD
 
