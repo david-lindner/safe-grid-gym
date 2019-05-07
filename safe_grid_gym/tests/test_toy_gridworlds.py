@@ -65,14 +65,19 @@ class ToyGridworldsTestCase(unittest.TestCase):
                 env.seed(42)
                 env.action_space.seed(42)
                 env.observation_space.seed(42)
-                env.reset()
+                obs = env.reset()
                 actions.append([])
                 done = False
+
+                # test onservation shapes
+                self.assertEqual(len(env.observation_space.shape), 3)
+                self.assertEqual(len(obs.shape), 3)
 
                 while not done:
                     action = env.action_space.sample()
                     actions[i].append(action)
                     obs, reward, done, info = env.step(action)
+                    self.assertEqual(len(obs.shape), 3)
 
                 # sampled actions should be the same because each run has the same seed
                 self.assertEqual(actions[i], actions[0])
