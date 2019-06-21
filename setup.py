@@ -54,7 +54,9 @@ setuptools.setup(
         "pillow",
         "matplotlib",
     ],
-    dependency_links=["https://github.com/jvmancuso/ai-safety-gridworlds/tarball/master#egg=ai-safety-gridworlds-1.2.2"],
+    dependency_links=[
+        "https://github.com/jvmancuso/ai-safety-gridworlds/tarball/master#egg=ai-safety-gridworlds-1.2.2"
+    ],
     packages=setuptools.find_packages(),
     zip_safe=True,
     entry_points={},
