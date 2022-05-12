@@ -33,6 +33,7 @@ class GridworldEnv(gym.Env):
                         - 'distributional_shift'
                         - 'friend_foe'
                         - 'island_navigation'
+                        - 'rocks_diamonds'
                         - 'safe_interruptibility'
                         - 'side_effects_sokoban'
                         - 'tomato_watering'
@@ -48,11 +49,11 @@ class GridworldEnv(gym.Env):
 
     metadata = {"render.modes": ["human", "ansi", "rgb_array"]}
 
-    def __init__(self, env_name, use_transitions=False, render_animation_delay=0.1):
+    def __init__(self, env_name, use_transitions=False, render_animation_delay=0.1, *args, **kwargs):
         self._env_name = env_name
         self._render_animation_delay = render_animation_delay
         self._viewer = None
-        self._env = factory.get_environment_obj(env_name)
+        self._env = factory.get_environment_obj(env_name, *args, **kwargs)
         self._rbg = None
         self._last_hidden_reward = 0
         self._use_transitions = use_transitions
